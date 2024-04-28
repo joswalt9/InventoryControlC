@@ -33,7 +33,41 @@ void saveInventory();
 //Add Vehicle Function
 void addVehicle() {
     cout << "Adding Vehicle..." << endl;
-    // Implement adding vehicle functionality here
+
+    // Gather information about the new vehicle from the user
+    InventoryItem newItem;
+    cout << "Enter Stock Number: ";
+    cin >> newItem.stockNumber;
+    cout << "Enter Year: ";
+    cin >> newItem.year;
+    cout << "Enter Make: ";
+    cin >> newItem.make;
+    cout << "Enter Model: ";
+    cin >> newItem.model;
+    cout << "Enter VIN: ";
+    cin >> newItem.VIN;
+
+    // Open the CSV file for appending
+    char buffer[FILENAME_MAX];
+    if (!_getcwd(buffer, FILENAME_MAX)) {
+        cerr << "Error getting current working directory." << endl;
+        return;
+    }
+
+    string filePath = string(buffer) + "\\inventory.csv";
+    ofstream file(filePath, ios_base::app); // Open for appending
+
+    if (!file.is_open()) {
+        cerr << "Failed to open file: " << filePath << endl;
+        return;
+    }
+
+    // Append the new vehicle information to the CSV file
+    file << newItem.stockNumber << "," << newItem.year << "," << newItem.make << "," << newItem.model << "," << newItem.VIN << endl;
+
+    file.close();
+
+    cout << "Vehicle added successfully." << endl;
 }
 
 //Delete Vehicle Function
