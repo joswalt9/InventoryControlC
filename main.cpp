@@ -10,7 +10,6 @@
 using namespace std;
 
 //Define structure for InventoryItem
-
 struct InventoryItem {
     int stockNumber;
     string year;
@@ -20,7 +19,6 @@ struct InventoryItem {
 };
 
 //Sort by Stock Number
-
 bool compareStockNumber(const InventoryItem& a, const InventoryItem& b) {
     return a.stockNumber < b.stockNumber;
 }
