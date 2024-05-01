@@ -75,6 +75,7 @@ void deleteVehicle() {
     cout << "Deleting Vehicle..." << endl;
     // Implement deleting vehicle functionality here
 }
+
 //View Inventory Function
 void viewInventory() {
     char buffer[FILENAME_MAX];  // Create a buffer to hold the path
@@ -138,14 +139,14 @@ void viewInventory() {
     sort(inventory.begin(), inventory.end(), compareStockNumber);
 
     // Display the sorted inventory
-    cout << "Stock #      Year   Make    Model   VIN" << endl;
+    cout << "Stock #  Year    Make    Model     VIN" << endl;
     cout << "-----------------------------------------" << endl;
 
     for (const auto& item : inventory) {
-        cout << setw(13) << left << item.stockNumber;
+        cout << setw(9) << left << item.stockNumber;
         cout << setw(8) << left << item.year;
         cout << setw(8) << left << item.make;
-        cout << setw(8) << left << item.model;
+        cout << setw(10) << left << item.model;
         cout << setw(13) << left << item.VIN;
         cout << endl;
     }
@@ -154,7 +155,9 @@ void saveInventory() {
     cout << "Saving Inventory..." << endl;
     // Implement saving the inventory here
     // Placeholder for saving the inventory
+    // Might not need this
 }
+
 //Main Program
 int main() {
     int choice;
