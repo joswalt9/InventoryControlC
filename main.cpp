@@ -31,7 +31,6 @@ bool compareStockNumber(const InventoryItem& a, const InventoryItem& b) {
 void addVehicle();
 void deleteVehicle();
 void viewInventory();
-void saveInventory();
 
 //Add Vehicle Function
 void addVehicle() {
@@ -229,7 +228,6 @@ int main() {
             viewInventory();
             break;
         case 4:
-            saveInventory();
             cout << "Exiting program. Goodbye!" << endl;
             return 0;
         default:
