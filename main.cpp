@@ -6,19 +6,23 @@
 #include <direct.h>
 #include <iomanip>
 #include <algorithm>
+#include <cctype>
+
 
 using namespace std;
+
+string filename; // Global variable to store the path to the inventory file
 
 //Define structure for InventoryItem
 struct InventoryItem {
     int stockNumber;
-    string year;
+    int year;
     string make;
     string model;
     string VIN;
 };
 
-//Sort by Stock Number
+//Sort by Stock Number in viewInventory Function
 bool compareStockNumber(const InventoryItem& a, const InventoryItem& b) {
     return a.stockNumber < b.stockNumber;
 }
@@ -29,36 +33,83 @@ void deleteVehicle();
 void viewInventory();
 void saveInventory();
 
-
 //Add Vehicle Function
 void addVehicle() {
     cout << "Adding Vehicle..." << endl;
 
     // Gather information about the new vehicle from the user
     InventoryItem newItem;
-    cout << "Enter Stock Number: ";
-    cin >> newItem.stockNumber;
-    cout << "Enter Year: ";
-    cin >> newItem.year;
-    cout << "Enter Make: ";
-    cin >> newItem.make;
-    cout << "Enter Model: ";
-    cin >> newItem.model;
-    cout << "Enter VIN: ";
-    cin >> newItem.VIN;
 
-    // Open the CSV file for appending
-    char buffer[FILENAME_MAX];
-    if (!_getcwd(buffer, FILENAME_MAX)) {
-        cerr << "Error getting current working directory." << endl;
-        return;
+    // Get Stock Number
+    bool validStockNumber = false;
+    while (!validStockNumber) {
+        cout << "Enter Stock Number: ";
+        string input;
+        cin >> input;
+        bool validInput = true;
+        for (char c : input) {
+            if (!isdigit(c)) {
+                validInput = false;
+                break;
+            }
+        }
+        if (validInput) {
+            newItem.stockNumber = stoi(input);
+            validStockNumber = true;
+        }
+        else {
+            cout << "Invalid input. Please enter a valid integer for the stock number." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
     }
 
-    string filePath = string(buffer) + "\\inventory.csv";
-    ofstream file(filePath, ios_base::app); // Open for appending
+    // Get Year
+    bool validYear = false;
+    while (!validYear) {
+        cout << "Enter Year: ";
+        string input;
+        cin >> input;
+        bool validInput = true;
+        for (char c : input) {
+            if (!isdigit(c)) {
+                validInput = false;
+                break;
+            }
+        }
+        if (validInput) {
+            newItem.year = stoi(input);
+            validYear = true;
+        }
+        else {
+            cout << "Invalid input. Please enter a valid integer for the year." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }
+
+    //Get Make
+    cout << "Enter Make: ";
+    cin >> newItem.make;
+
+    //Get Model
+    cout << "Enter Model: ";
+    cin >> newItem.model;
+
+    //Get VIN
+    do {
+        cout << "Enter VIN (must be exactly 16 characters): "; //Check VIN validation
+        cin >> newItem.VIN;
+        if (newItem.VIN.length() != 16) {
+            cout << "Invalid VIN length. Please enter exactly 16 characters." << endl;
+        }
+    } while (newItem.VIN.length() != 16);
+
+    // Open the CSV file for appending
+    ofstream file(filename, ios_base::app); // Open for appending
 
     if (!file.is_open()) {
-        cerr << "Failed to open file: " << filePath << endl;
+        cerr << "Failed to open file: " << filename << endl;
         return;
     }
 
@@ -78,17 +129,9 @@ void deleteVehicle() {
 
 //View Inventory Function
 void viewInventory() {
-    char buffer[FILENAME_MAX];  // Create a buffer to hold the path
-    if (!_getcwd(buffer, FILENAME_MAX)) {
-        cerr << "Error getting current working directory." << endl;
-        return;
-    }
-
-    string filePath = string(buffer) + "\\inventory.csv";  // Construct the full path
-
-    ifstream file(filePath);
+    ifstream file(filename);
     if (!file.is_open()) {
-        cerr << "Failed to open file: " << filePath << endl;
+        cerr << "Failed to open file: " << filename << endl;
         return;
     }
 
@@ -114,7 +157,7 @@ void viewInventory() {
                     item.stockNumber = stoi(token);
                     break;
                 case 1:
-                    item.year = token;
+                    item.year = stoi(token);
                     break;
                 case 2:
                     item.make = token;
@@ -151,16 +194,19 @@ void viewInventory() {
         cout << endl;
     }
 }
-void saveInventory() {
-    cout << "Saving Inventory..." << endl;
-    // Implement saving the inventory here
-    // Placeholder for saving the inventory
-    // Might not need this
-}
 
 //Main Program
 int main() {
-    int choice;
+
+    // Get the current working directory and construct the file path
+    char buffer[FILENAME_MAX];
+    if (!_getcwd(buffer, FILENAME_MAX)) {
+        cerr << "Error getting current working directory." << endl;
+        return 1;
+    }
+    filename = string(buffer) + "\\inventory.csv";
+
+    int choice; //Menu choice variable
 
     do {
         // Display menu
