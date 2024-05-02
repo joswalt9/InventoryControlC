@@ -32,32 +32,89 @@ void addVehicle();
 void deleteVehicle();
 void viewInventory();
 
-//Add Vehicle Function
 void addVehicle() {
     cout << "Adding Vehicle..." << endl;
 
-    // Gather information about the new vehicle from the user
     InventoryItem newItem;
 
-    // Get Stock Number
+    // Read existing inventory to check for duplicate stock numbers and VINs
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cerr << "Failed to open file: " << filename << endl;
+        return;
+    }
+
+    string line;
+    bool header = true;  // Skip header line
+    vector<InventoryItem> inventory;
+
+    while (getline(file, line)) {
+        if (header) {
+            header = false;
+            continue;
+        }
+        stringstream ss(line);
+        InventoryItem item;
+        string token;
+        int index = 0;
+        while (getline(ss, token, ',')) {
+            switch (index) {
+            case 0:
+                item.stockNumber = stoi(token);
+                break;
+            case 1:
+                item.year = stoi(token);
+                break;
+            case 2:
+                item.make = token;
+                break;
+            case 3:
+                item.model = token;
+                break;
+            case 4:
+                item.VIN = token;
+                break;
+            }
+            index++;
+        }
+        inventory.push_back(item);
+    }
+    file.close();
+
+    // Get and validate Stock Number
     bool validStockNumber = false;
     while (!validStockNumber) {
         cout << "Enter Stock Number: ";
         string input;
         cin >> input;
         bool validInput = true;
+
         for (char c : input) {
             if (!isdigit(c)) {
                 validInput = false;
                 break;
             }
         }
+
         if (validInput) {
-            newItem.stockNumber = stoi(input);
-            validStockNumber = true;
+            int potentialStockNumber = stoi(input);
+
+            // Check if the stock number is already in use
+            if (any_of(inventory.begin(), inventory.end(), [potentialStockNumber](const InventoryItem& item) {
+                return item.stockNumber == potentialStockNumber;
+                })) {
+                cout << "Stock number already in use. Please enter a different stock number." << endl;
+            }
+            else {
+                newItem.stockNumber = potentialStockNumber;
+                validStockNumber = true;
+            }
         }
         else {
             cout << "Invalid input. Please enter a valid integer for the stock number." << endl;
+        }
+
+        if (!validStockNumber) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
@@ -87,38 +144,53 @@ void addVehicle() {
         }
     }
 
-    //Get Make
+    // Get Make
     cout << "Enter Make: ";
     cin >> newItem.make;
 
-    //Get Model
+    // Get Model
     cout << "Enter Model: ";
     cin >> newItem.model;
 
-    //Get VIN
-    do {
-        cout << "Enter VIN (must be exactly 16 characters): "; //Check VIN validation
-        cin >> newItem.VIN;
-        if (newItem.VIN.length() != 16) {
+    // Get and validate VIN
+    bool validVIN = false;
+    while (!validVIN) {
+        cout << "Enter VIN (must be exactly 16 characters): ";
+        string vinInput;
+        cin >> vinInput;
+
+        if (vinInput.length() == 16) {
+            // Check if the VIN is already in use
+            if (any_of(inventory.begin(), inventory.end(), [&vinInput](const InventoryItem& item) {
+                return item.VIN == vinInput;
+                })) {
+                cout << "VIN already in use. Please enter a different VIN." << endl;
+            }
+            else {
+                newItem.VIN = vinInput;
+                validVIN = true;
+            }
+        }
+        else {
             cout << "Invalid VIN length. Please enter exactly 16 characters." << endl;
         }
-    } while (newItem.VIN.length() != 16);
+    }
 
     // Open the CSV file for appending
-    ofstream file(filename, ios_base::app); // Open for appending
-
-    if (!file.is_open()) {
+    ofstream outfile(filename, ios_base::app); // Open for appending
+    if (!outfile.is_open()) {
         cerr << "Failed to open file: " << filename << endl;
         return;
     }
 
     // Append the new vehicle information to the CSV file
-    file << newItem.stockNumber << "," << newItem.year << "," << newItem.make << "," << newItem.model << "," << newItem.VIN << endl;
-
-    file.close();
+    outfile << newItem.stockNumber << "," << newItem.year << "," << newItem.make << "," << newItem.model << "," << newItem.VIN << endl;
+    outfile.close();
 
     cout << "Vehicle added successfully." << endl;
 }
+
+
 
 //Delete Vehicle Function
 void deleteVehicle() {
