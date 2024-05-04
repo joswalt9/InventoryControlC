@@ -20,12 +20,12 @@ int main() {
 
         switch (choice) {
 
-        //Add Vehicle
+        // Add Vehicle
         case 1: {
             int stockNumber, year;
             std::string make, model, VIN;
 
-            //Check if Stock Number has been used
+            // Check if Stock Number has been used
             bool uniqueStockNumber = false;
             do {
                 // Get Stock Number
@@ -40,25 +40,39 @@ int main() {
                 }
             } while (!uniqueStockNumber);
 
-            //Get Year
-            std::cout << "Enter Year: ";
-            std::cin >> year;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore leftover input
+            // Get Year
+            do {
+                std::cout << "Enter Year: ";
+                std::cin >> year;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore leftover input
 
-            //Get Make
+                //Check Year Length
+                if (std::to_string(year).length() != 4) {
+                    std::cout << "Year must be exactly 4 characters long. Please try again." << std::endl;
+                }
+            } while (std::to_string(year).length() != 4);
+
+
+            // Get Make
             std::cout << "Enter Make: ";
             std::getline(std::cin, make);
 
-            //Get Model
+            // Get Model
             std::cout << "Enter Model: ";
             std::getline(std::cin, model);
 
-            //Get VIN
+            // Get VIN
             bool uniqueVIN = false;
             do {
                 // Get VIN
                 std::cout << "Enter VIN: ";
                 std::cin >> VIN;
+
+                // Check VIN length
+                if (VIN.length() != 17) {
+                    std::cout << "VIN must be exactly 17 characters long. Please try again." << std::endl;
+                    continue;
+                }
                 // Check if VIN has been used
                 if (manager.isVINUsed(VIN)) {
                     std::cout << "VIN already exists. Please enter a different one." << std::endl;
