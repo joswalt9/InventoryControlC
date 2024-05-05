@@ -1,9 +1,11 @@
 #include "InventoryManager.h"
 #include <iostream>
 #include <limits>
+#include <regex>
 
 int main() {
-    std::string filename = "inventory.csv";
+
+    std::string filename = "inventory.csv"; // Filename variable
     InventoryManager manager(filename);
 
     int choice; // Menu choice variable
@@ -30,27 +32,50 @@ int main() {
             do {
                 // Get Stock Number
                 std::cout << "Enter Stock Number: ";
-                std::cin >> stockNumber;
-                // Check if Stock Number has been used
-                if (manager.isStockNumberUsed(stockNumber)) {
-                    std::cout << "Stock number already exists. Please enter a different one." << std::endl;
+                std::string input;
+                std::cin >> input;
+
+                // Validate Stock Number using Regex
+                if (std::regex_match(input, std::regex("^\\d+$"))) {
+                    stockNumber = std::stoi(input);
+                    if (manager.isStockNumberUsed(stockNumber)) {
+                        std::cout << "Stock number already exists. Please enter a different one." << std::endl;
+                    }
+                    else {
+                        uniqueStockNumber = true;
+                    }
                 }
                 else {
-                    uniqueStockNumber = true;
+                    std::cout << "Invalid input. Please enter a valid integer for the stock number." << std::endl;
                 }
             } while (!uniqueStockNumber);
 
             // Get Year
+            bool validYear = false;
             do {
                 std::cout << "Enter Year: ";
-                std::cin >> year;
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Ignore leftover input
+                std::string input;
+                std::cin >> input;
 
-                //Check Year Length
-                if (std::to_string(year).length() != 4) {
-                    std::cout << "Year must be exactly 4 characters long. Please try again." << std::endl;
+                // Validate Year using Regex
+                if (std::regex_match(input, std::regex("^\\d{4}$"))) {
+                    year = std::stoi(input);
+                    if (year >= 1900 && year <= 2030) { // Check if year is within range
+                        validYear = true;
+                    }
+                    else {
+                        std::cout << "Year must be between 1900 and 2030. Please try again." << std::endl;
+                    }
                 }
-            } while (std::to_string(year).length() != 4);
+                else {
+                    std::cout << "Invalid input. Year must be exactly 4 digits long. Please try again." << std::endl;
+                    std::cin.clear(); // Clear error flags
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                }
+            } while (!validYear);
+
+            //Clear newline character from input buffer
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 
             // Get Make
@@ -90,7 +115,7 @@ int main() {
             break;
         }
 
-        //Delete Vehicle
+        // Delete Vehicle
         case 2: {
             int stockNumber;
             std::cout << "Enter Stock Number of vehicle to delete: ";
@@ -98,12 +123,17 @@ int main() {
             manager.deleteVehicle(stockNumber);
             break;
         }
+
+        // View Inventory
         case 3:
             manager.viewInventory();
             break;
+
+        // Exit Program
         case 4:
             std::cout << "Exiting program. Goodbye!" << std::endl;
             return 0;
+
         default:
             std::cout << "Invalid choice. Please enter a number between 1 and 4." << std::endl;
             std::cin.clear();
