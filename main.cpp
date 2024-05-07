@@ -24,11 +24,11 @@ int main() {
 
         // Add Vehicle
         case 1: {
-            int stockNumber, year;
-            std::string make, model, VIN;
+            int stockNumber, year;// Variables for Stock Number and Year
+            std::string make, model, VIN; // Variables for Make, Model, and VIN
 
             // Check if Stock Number has been used
-            bool uniqueStockNumber = false;
+            bool uniqueStockNumber = false; // Variable to check if Stock Number is unique
             do {
                 // Get Stock Number
                 std::cout << "Enter Stock Number: ";
@@ -51,7 +51,7 @@ int main() {
             } while (!uniqueStockNumber);
 
             // Get Year
-            bool validYear = false;
+            bool validYear = false; //Variable to check if Year is valid
             do {
                 std::cout << "Enter Year: ";
                 std::string input;
@@ -87,7 +87,7 @@ int main() {
             std::getline(std::cin, model);
 
             // Get VIN
-            bool uniqueVIN = false;
+            bool uniqueVIN = false; // Variable to check if VIN is unique
             do {
                 // Get VIN
                 std::cout << "Enter VIN: ";
@@ -106,8 +106,8 @@ int main() {
                     uniqueVIN = true;
                 }
             } while (!uniqueVIN);
-
-            //Add new vehicle to inventory.csv
+                    
+            // Add new vehicle to inventory.csv
             InventoryItem* newItem = new InventoryItem(stockNumber, year, make, model, VIN);
             manager.addVehicle(*newItem);
             std::cout << "Vehicle added successfully." << std::endl;
@@ -117,7 +117,7 @@ int main() {
 
         // Delete Vehicle
         case 2: {
-            int stockNumber;
+            int stockNumber; // Variable for Stock Number
             std::cout << "Enter Stock Number of vehicle to delete: ";
             std::cin >> stockNumber;
             manager.deleteVehicle(stockNumber);
