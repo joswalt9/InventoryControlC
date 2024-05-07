@@ -83,7 +83,7 @@ void InventoryManager::viewInventory() {
         return a.stockNumber < b.stockNumber;
         });
     std::cout << "Stock #  Year    Make    Model     VIN" << std::endl;
-    std::cout << "-----------------------------------------" << std::endl;
+    std::cout << "----------------------------------------------------" << std::endl;
     for (const auto& item : inventory) {
         std::cout << std::setw(9) << std::left << item.stockNumber;
         std::cout << std::setw(8) << std::left << item.year;
