@@ -51,7 +51,7 @@ int main() {
             } while (!uniqueStockNumber);
 
             // Get Year
-            bool validYear = false; //Variable to check if Year is valid
+            bool validYear = false; // Variable to check if Year is valid
             do {
                 std::cout << "Enter Year: ";
                 std::string input;
@@ -74,7 +74,7 @@ int main() {
                 }
             } while (!validYear);
 
-            //Clear newline character from input buffer
+            // Clear newline character from input buffer
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 
