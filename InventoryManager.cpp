@@ -35,8 +35,8 @@ void InventoryManager::readInventory() {
         while (std::getline(ss, token, ',')) {
             tokens.push_back(token);
         }
-        if (tokens.size() == 5) {
-            InventoryItem item(std::stoi(tokens[0]), std::stoi(tokens[1]), tokens[2], tokens[3], tokens[4]);
+        if (tokens.size() == 6) {
+            InventoryItem item(std::stoi(tokens[0]), std::stoi(tokens[1]), tokens[2], tokens[3], std::stoi(tokens[4]), tokens[5]);
             inventory.push_back(item);
         }
     }
@@ -51,9 +51,9 @@ void InventoryManager::saveInventory() {
         return;
     }
 
-    file << "StockNumber,Year,Make,Model,VIN" << std::endl;
+    file << "StockNumber,Year,Make,Model,Mileage, VIN" << std::endl;
     for (const auto& item : inventory) {
-        file << item.stockNumber << "," << item.year << "," << item.make << "," << item.model << "," << item.VIN << std::endl;
+        file << item.stockNumber << "," << item.year << "," << item.make << "," << item.model << "," << item.mileage << "," << item.VIN << std::endl;
     }
     file.close();
 }
@@ -82,13 +82,14 @@ void InventoryManager::viewInventory() {
     std::sort(inventory.begin(), inventory.end(), [](const InventoryItem& a, const InventoryItem& b) {
         return a.stockNumber < b.stockNumber;
         });
-    std::cout << "Stock #  Year    Make    Model     VIN" << std::endl;
-    std::cout << "----------------------------------------------------" << std::endl;
+    std::cout << "Stock #  Year    Make      Model     Mileage     VIN" << std::endl;
+    std::cout << "-------------------------------------------------------------" << std::endl;
     for (const auto& item : inventory) {
         std::cout << std::setw(9) << std::left << item.stockNumber;
         std::cout << std::setw(8) << std::left << item.year;
-        std::cout << std::setw(8) << std::left << item.make;
+        std::cout << std::setw(10) << std::left << item.make;
         std::cout << std::setw(10) << std::left << item.model;
+        std::cout << std::setw(9) << std::left << item.mileage;
         std::cout << std::setw(13) << std::left << item.VIN;
         std::cout << std::endl;
     }

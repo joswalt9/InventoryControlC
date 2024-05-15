@@ -1,3 +1,5 @@
+//main.cpp
+
 #include "InventoryManager.h"
 #include <iostream>
 #include <limits>
@@ -24,7 +26,7 @@ int main() {
 
         // Add Vehicle
         case 1: {
-            int stockNumber, year;// Variables for Stock Number and Year
+            int stockNumber, year, mileage;// Variables for Stock Number, Mileage, and Year
             std::string make, model, VIN; // Variables for Make, Model, and VIN
 
             // Check if Stock Number has been used
@@ -86,6 +88,25 @@ int main() {
             std::cout << "Enter Model: ";
             std::getline(std::cin, model);
 
+            // Get Mileage
+            bool validMileage = false; // Variable to check if Mileage is valid
+            do {
+                std::cout << "Enter Mileage: ";
+                std::string input;
+                std::cin >> input;
+
+                // Validate Mileage using Regex
+                if (std::regex_match(input, std::regex("^\\d{1,6}$"))) {
+                    mileage = std::stoi(input);
+                    validMileage = true;
+                }
+                else {
+                    std::cout << "Invalid input. Mileage must be an integer up to 6 characters long. Please try again." << std::endl;
+                    std::cin.clear(); // Clear error flags
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+                }
+            } while (!validMileage);
+
             // Get VIN
             bool uniqueVIN = false; // Variable to check if VIN is unique
             do {
@@ -108,7 +129,7 @@ int main() {
             } while (!uniqueVIN);
                     
             // Add new vehicle to inventory.csv
-            InventoryItem* newItem = new InventoryItem(stockNumber, year, make, model, VIN);
+            InventoryItem* newItem = new InventoryItem(stockNumber, year, make, model, mileage, VIN);
             manager.addVehicle(*newItem);
             std::cout << "Vehicle added successfully." << std::endl;
             delete newItem; // Free dynamically allocated memory
@@ -116,13 +137,38 @@ int main() {
         }
 
         // Delete Vehicle
-        case 2: {
-            int stockNumber; // Variable for Stock Number
-            std::cout << "Enter Stock Number of vehicle to delete: ";
-            std::cin >> stockNumber;
-            manager.deleteVehicle(stockNumber);
-            break;
+case 2: {
+    int stockNumber; // Variable for Stock Number
+    bool validStockNumber = false; // Variable to check if Stock Number is valid
+
+    do {
+        std::cout << "Enter Stock Number of vehicle to delete: ";
+        std::string input;
+        std::cin >> input;
+
+        // Validate input as integer
+        if (std::regex_match(input, std::regex("^\\d+$"))) {
+            stockNumber = std::stoi(input);
+            validStockNumber = true;
         }
+        else {
+            std::cout << "Invalid input. Please enter a valid integer for the stock number." << std::endl;
+            std::cin.clear(); // Clear error flags
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+        }
+    } while (!validStockNumber);
+
+    // Check if the vehicle exists before attempting deletion
+    if (manager.isStockNumberUsed(stockNumber)) {
+        manager.deleteVehicle(stockNumber);
+        std::cout << "Vehicle with Stock Number " << stockNumber << " deleted successfully." << std::endl;
+    }
+    else {
+        std::cout << "Vehicle with Stock Number " << stockNumber << " does not exist in the inventory." << std::endl;
+    }
+    break;
+}
+
 
         // View Inventory
         case 3:
