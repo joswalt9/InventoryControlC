@@ -83,7 +83,7 @@ int main() {
             // Get Make
             bool validMake = false; // Variable to check if Make is valid
             do {
-                std::cout << "Enter Make (up to 20 characters): ";
+                std::cout << "Enter Make (up to 15 characters): ";
                 std::getline(std::cin, make);
 
                 // Validate Make length
