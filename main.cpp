@@ -81,12 +81,34 @@ int main() {
 
 
             // Get Make
-            std::cout << "Enter Make: ";
-            std::getline(std::cin, make);
+            bool validMake = false; // Variable to check if Make is valid
+            do {
+                std::cout << "Enter Make (up to 20 characters): ";
+                std::getline(std::cin, make);
+
+                // Validate Make length
+                if (make.length() <= 15 && !make.empty()) {
+                    validMake = true;
+                }
+                else {
+                    std::cout << "Make must be non-empty and contain up to 15 characters. Please try again." << std::endl;
+                }
+            } while (!validMake);
 
             // Get Model
-            std::cout << "Enter Model: ";
-            std::getline(std::cin, model);
+            bool validModel = false; // Variable to check if Model is valid
+            do {
+                std::cout << "Enter Model (up to 15 characters): ";
+                std::getline(std::cin, model);
+
+                // Validate Model length
+                if (model.length() <= 15 && !model.empty()) {
+                    validModel = true;
+                }
+                else {
+                    std::cout << "Model must be non-empty and contain up to 15 characters. Please try again." << std::endl;
+                }
+            } while (!validModel);
 
             // Get Mileage
             bool validMileage = false; // Variable to check if Mileage is valid

@@ -82,18 +82,24 @@ void InventoryManager::viewInventory() {
     std::sort(inventory.begin(), inventory.end(), [](const InventoryItem& a, const InventoryItem& b) {
         return a.stockNumber < b.stockNumber;
         });
-    std::cout << "Stock #  Year    Make      Model     Mileage     VIN" << std::endl;
-    std::cout << "-------------------------------------------------------------" << std::endl;
+    std::cout << std::setw(9) << std::left << "Stock #";
+    std::cout << std::setw(8) << std::left << "Year";
+    std::cout << std::setw(15) << std::left << "Make";
+    std::cout << std::setw(15) << std::left << "Model";
+    std::cout << std::setw(12) << std::left << "Mileage";
+    std::cout << std::setw(13) << std::left << "VIN" << std::endl;
+    std::cout << "----------------------------------------------------------------------------" << std::endl;
     for (const auto& item : inventory) {
         std::cout << std::setw(9) << std::left << item.stockNumber;
         std::cout << std::setw(8) << std::left << item.year;
-        std::cout << std::setw(10) << std::left << item.make;
-        std::cout << std::setw(10) << std::left << item.model;
-        std::cout << std::setw(9) << std::left << item.mileage;
+        std::cout << std::setw(15) << std::left << item.make;
+        std::cout << std::setw(15) << std::left << item.model;
+        std::cout << std::setw(12) << std::left << item.mileage;
         std::cout << std::setw(13) << std::left << item.VIN;
         std::cout << std::endl;
     }
 }
+
 
 //Check if Stock Number has been previously used
 bool InventoryManager::isStockNumberUsed(int stockNumber) const {
